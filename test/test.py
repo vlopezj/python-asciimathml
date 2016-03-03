@@ -68,6 +68,11 @@ class ParseTestCase(unittest.TestCase):
             El('math', El('mstyle',
                 El('mrow', El('mtext', text='undefined')))))
 
+    def testQuotedText(self):
+        self.assertTreeEquals(parse('"a \\" \\\\ b"'),
+            El('math', El('mstyle',
+                El('mrow', El('mtext', text='a " \ b')))))
+
     def testIncompleteFrac(self):
         self.assertTreeEquals(parse('alpha /'),
             El('math', El('mstyle',

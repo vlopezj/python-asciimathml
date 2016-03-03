@@ -37,6 +37,11 @@ def El(tag, text=None, *children, **attrib):
     return element
 
 number_re = re.compile('-?(\d+\.(\d+)?|\.?\d+)')
+quoted_string_re = re.compile(r'"((\\.|[^"\\])*)"')
+quoted_string_unescape_re = re.compile(r'\\(.)')
+
+def unescape_string(s):
+    return quoted_string_unescape_re.sub(lambda m: m.group(1), s)
 
 def strip_parens(n):
     if n.tag == 'mrow':
@@ -326,6 +331,11 @@ def parse_m(s, required=False):
 
     if s == '':
         return '', El('mi', u'\u25a1') if required else None
+
+    m = quoted_string_re.match(s)
+    if m:
+        text = unescape_string(m.group(1))
+        return s[m.end():], El('mrow', El('mtext', text))
 
     m = number_re.match(s)
 
